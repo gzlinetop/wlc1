@@ -1,0 +1,43 @@
+:root{
+  --bg:#f7f9fc;
+  --primary:#6C4AE2;
+  --primary-dark:#5a39d1;
+  --white:#ffffff;
+  --muted:#9aa4b2;
+  --key:#f2f4f8;
+  --op:#ffd27f;
+}
+
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;font-family:Inter,system-ui,Arial;background:linear-gradient(180deg,#fff,#f3f6fb);color:#111;-webkit-font-smoothing:antialiased}
+.calc-wrap{
+  max-width:420px;margin:24px auto;padding:16px;border-radius:18px;background:var(--white);box-shadow:0 14px 40px rgba(15,10,40,0.06);
+  display:flex;flex-direction:column;gap:12px;
+}
+.calc-header{display:flex;justify-content:space-between;align-items:center}
+.title{font-weight:700;color:var(--primary);font-size:18px}
+.icon-btn{background:var(--key);border:0;padding:8px;border-radius:10px;cursor:pointer}
+
+.display-area{background:linear-gradient(180deg,#f6f8ff,#ffffff);padding:14px;border-radius:12px;border:1px solid rgba(16,24,40,0.03);display:flex;flex-direction:column;align-items:flex-end;gap:6px;min-height:86px}
+.expression{color:var(--muted);font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;width:100%}
+.result{font-weight:700;font-size:28px}
+
+.keys{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.btn{padding:16px;border-radius:12px;border:0;background:var(--key);font-weight:700;font-size:16px;cursor:pointer;box-shadow:0 6px 18px rgba(12,10,30,0.04)}
+.btn:active{transform:translateY(1px)}
+.btn.op{background:linear-gradient(180deg,var(--op),#ffb86b);color:#111}
+.btn.func{background:transparent;border:1px solid rgba(16,24,40,0.04)}
+.equal{grid-column:span 1;background:var(--primary);color:#fff;border-radius:12px}
+.zero{grid-column:span 2}
+
+.hidden{display:none}
+.modal-bg{position:fixed;inset:0;background:rgba(12,10,20,0.45);display:flex;align-items:center;justify-content:center;z-index:10000}
+.modal{background:var(--white);padding:14px;border-radius:12px;min-width:260px;max-width:420px;max-height:80vh;overflow:auto}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:120px;background:#111;color:#fff;padding:10px 14px;border-radius:10px;z-index:10001}
+
+/* responsive */
+@media(max-width:480px){
+  .calc-wrap{margin:12px;padding:12px;border-radius:12px}
+  .result{font-size:24px}
+  .btn{padding:12px}
+}

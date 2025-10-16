@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>CalcPWA — Calculadora</title>
+
+  <!-- PWA -->
+  <link rel="manifest" href="./manifest.json">
+  <meta name="theme-color" content="#6C4AE2">
+  <link rel="apple-touch-icon" href="./icons/icon-192.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+  <!-- Google Font (opcional) -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="calc-wrap" role="application" aria-label="Calculadora">
+    <header class="calc-header">
+      <div class="title">CalcPWA</div>
+      <button id="btnHistory" class="icon-btn" title="Historial">🕘</button>
+    </header>
+
+    <section class="display-area" aria-live="polite">
+      <div id="expression" class="expression">0</div>
+      <div id="result" class="result">0</div>
+    </section>
+
+    <section class="keys">
+      <!-- row -->
+      <button class="btn func" data-action="clear">C</button>
+      <button class="btn func" data-action="back">⌫</button>
+      <button class="btn func" data-action="percent">%</button>
+      <button class="btn op" data-value="/">÷</button>
+
+      <button class="btn num" data-value="7">7</button>
+      <button class="btn num" data-value="8">8</button>
+      <button class="btn num" data-value="9">9</button>
+      <button class="btn op" data-value="*">×</button>
+
+      <button class="btn num" data-value="4">4</button>
+      <button class="btn num" data-value="5">5</button>
+      <button class="btn num" data-value="6">6</button>
+      <button class="btn op" data-value="-">−</button>
+
+      <button class="btn num" data-value="1">1</button>
+      <button class="btn num" data-value="2">2</button>
+      <button class="btn num" data-value="3">3</button>
+      <button class="btn op" data-value="+">+</button>
+
+      <button class="btn num zero" data-value="0">0</button>
+      <button class="btn num" data-value=".">.</button>
+      <button class="btn equal" data-action="equals">=</button>
+    </section>
+
+    <div id="modalRoot" class="hidden" aria-hidden="true"></div>
+    <div id="toastRoot" class="hidden" aria-hidden="true"></div>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
