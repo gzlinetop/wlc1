@@ -16,7 +16,10 @@ html,body{height:100%;margin:0;font-family:Inter,system-ui,Arial;background:line
 }
 .calc-header{display:flex;justify-content:space-between;align-items:center}
 .title{font-weight:700;color:var(--primary);font-size:18px}
-.icon-btn{background:var(--key);border:0;padding:8px;border-radius:10px;cursor:pointer}
+.hint{color:var(--muted);font-size:12px}
+
+.icon-btn{background:var(--key);border:0;padding:8px;border-radius:10px;cursor:pointer;font-weight:700}
+.icon-btn.hidden{display:none}
 
 .display-area{background:linear-gradient(180deg,#f6f8ff,#ffffff);padding:14px;border-radius:12px;border:1px solid rgba(16,24,40,0.03);display:flex;flex-direction:column;align-items:flex-end;gap:6px;min-height:86px}
 .expression{color:var(--muted);font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;width:100%}

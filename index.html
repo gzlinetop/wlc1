@@ -1,27 +1,34 @@
 <!doctype html>
 <html lang="es">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
   <title>CalcPWA — Calculadora</title>
 
-  <!-- PWA -->
+  <!-- PWA / apariencia -->
   <link rel="manifest" href="./manifest.json">
   <meta name="theme-color" content="#6C4AE2">
-  <link rel="apple-touch-icon" href="./icons/icon-192.png">
+  <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="CalcPWA">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
-  <!-- Google Font (opcional) -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
-
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <main class="calc-wrap" role="application" aria-label="Calculadora">
     <header class="calc-header">
-      <div class="title">CalcPWA</div>
-      <button id="btnHistory" class="icon-btn" title="Historial">🕘</button>
+      <div style="display:flex;gap:8px;align-items:center">
+        <div class="title">CalcPWA</div>
+        <small class="hint">— simple</small>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <!-- Botones nuevos para instalación / fullscreen -->
+        <button id="btnInstall" class="icon-btn hidden" title="Instalar app">⬇︎ Instalar</button>
+        <button id="btnFullscreen" class="icon-btn" title="Abrir sin barra">⌂ Abrir sin barra</button>
+        <button id="btnHistory" class="icon-btn" title="Historial">🕘</button>
+      </div>
     </header>
 
     <section class="display-area" aria-live="polite">
@@ -30,7 +37,6 @@
     </section>
 
     <section class="keys">
-      <!-- row -->
       <button class="btn func" data-action="clear">C</button>
       <button class="btn func" data-action="back">⌫</button>
       <button class="btn func" data-action="percent">%</button>
@@ -61,5 +67,61 @@
   </main>
 
   <script src="script.js"></script>
+
+  <!-- Script de instalación / fullscreen -->
+  <script>
+    (function(){
+      let deferredPrompt = null;
+      const btnInstall = document.getElementById('btnInstall');
+      const btnFullscreen = document.getElementById('btnFullscreen');
+
+      // Capturamos beforeinstallprompt para mostrar nuestro botón
+      window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        btnInstall.classList.remove('hidden');
+      });
+
+      btnInstall.addEventListener('click', async () => {
+        if(!deferredPrompt) return;
+        deferredPrompt.prompt();
+        const choice = await deferredPrompt.userChoice;
+        if(choice && choice.outcome === 'accepted') {
+          console.log('Usuario aceptó instalar');
+        } else {
+          console.log('Usuario rechazó instalar');
+        }
+        deferredPrompt = null;
+        btnInstall.classList.add('hidden');
+      });
+
+      // Fullscreen: debe ser por interacción del usuario
+      btnFullscreen.addEventListener('click', async () => {
+        try {
+          // requestFullscreen en el elemento raíz
+          const el = document.documentElement;
+          if (el.requestFullscreen) await el.requestFullscreen();
+          else if (el.webkitRequestFullscreen) await el.webkitRequestFullscreen();
+          else if (el.msRequestFullscreen) await el.msRequestFullscreen();
+        } catch (err) {
+          console.warn('Fullscreen error', err);
+        }
+      });
+
+      // Si la app ya está instalada (display-mode) ocultamos el botón instalar
+      function getDisplayMode() {
+        if(window.matchMedia('(display-mode: standalone)').matches) return 'standalone';
+        return 'browser';
+      }
+      if(getDisplayMode() === 'standalone') btnInstall.classList.add('hidden');
+
+      // Opcional: detectar cuando se sale o entra a fullscreen
+      document.addEventListener('fullscreenchange', ()=>{
+        // puedes mostrar un toast cuando entres/salgas de fullscreen
+        // console.log('fullscreenChange', document.fullscreenElement);
+      });
+
+    })();
+  </script>
 </body>
 </html>

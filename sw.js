@@ -30,7 +30,6 @@ self.addEventListener('activate', (evt) => {
 self.addEventListener('fetch', (evt) => {
   const req = evt.request;
   const url = new URL(req.url);
-  // don't cache cross-origin external requests (fonts, cdn) to reduce issues
   if(url.origin !== location.origin) return;
   evt.respondWith(
     caches.match(req).then((cached) => cached || fetch(req).then((res) => {

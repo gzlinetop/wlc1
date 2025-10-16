@@ -25,20 +25,12 @@ document.addEventListener('DOMContentLoaded', () => {
     setTimeout(()=>{ toastRoot.classList.add('hidden'); toastRoot.innerHTML=''; }, ms);
   }
 
-  // safe evaluate: allows digits, operators, parentheses, dot, spaces and percent
   function safeEvaluate(input) {
     if(!input || typeof input !== 'string') return 0;
-    // replace visible symbols with JS-friendly ones
     let sanitized = input.replace(/×/g, '*').replace(/÷/g, '/').replace(/−/g, '-').replace(/\s+/g,'');
-    // handle percentages: replace "number%" with "(number/100)"
     sanitized = sanitized.replace(/(\d+(\.\d+)?)%/g, '($1/100)');
-    // only allow characters 0-9 + - * / . ( ) % whitespace
     if(!/^[0-9+\-*/().\s]+$/.test(sanitized)) throw new Error('Caracteres inválidos');
-    // final safety: avoid sequences like "++" not necessary to block, JS handles
-    // evaluate using Function
-    // limit length
     if(sanitized.length > 200) throw new Error('Expresión muy larga');
-    // eslint-disable-next-line no-new-func
     const fn = new Function('return ' + sanitized);
     const res = fn();
     if(typeof res === 'number' && isFinite(res)) return res;
@@ -47,21 +39,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function formatNumber(n){
     if(typeof n !== 'number') return n;
-    // remove trailing .0
-    const s = String(Number(n.toFixed(12))); // limit precision
+    const s = String(Number(n.toFixed(12)));
     return s;
   }
 
-  // input handling
   function appendValue(v){
     if(justEvaluated){
-      // if the last action was equals and user types a number, start new
       if(/[0-9.]/.test(v)){
         expr = v === '.' ? '0.' : v;
         justEvaluated = false;
         render(); return;
       } else {
-        justEvaluated = false; // allow continuing with operator after result
+        justEvaluated = false;
       }
     }
     if(expr === '0' && /[0-9]/.test(v)){
@@ -88,7 +77,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function applyPercent(){
-    // append % to expression and evaluate when equals pressed
     if(justEvaluated){ expr = String(resultEl.textContent); justEvaluated=false; }
     if(!/[%]$/.test(expr)) expr += '%';
     render();
@@ -97,7 +85,6 @@ document.addEventListener('DOMContentLoaded', () => {
   function evaluateExpression(){
     try {
       const value = safeEvaluate(expr);
-      // store to history
       history.push({expr: expr, result: formatNumber(value), at: new Date().toISOString()});
       if(history.length > 50) history = history.slice(-50);
       localStorage.setItem(STORAGE_PREFIX + 'history', JSON.stringify(history));
@@ -109,7 +96,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // attach button handlers
   document.querySelectorAll('.btn').forEach(btn=>{
     const v = btn.dataset.value;
     const action = btn.dataset.action;
@@ -122,7 +108,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // keyboard support
   window.addEventListener('keydown', (e)=>{
     const key = e.key;
     if((/^[0-9]$/).test(key)){ appendValue(key); e.preventDefault(); return; }
@@ -134,7 +119,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if(key === '%'){ applyPercent(); e.preventDefault(); return; }
   });
 
-  // history modal
   document.getElementById('btnHistory').addEventListener('click', ()=>{
     const html = `
       <div style="max-height:320px;overflow:auto">
@@ -149,7 +133,6 @@ document.addEventListener('DOMContentLoaded', () => {
     ]});
   });
 
-  // small modal system (reuse from MiPlayer style)
   function showModal({title='', html='', buttons=[]}){
     modalRoot.innerHTML = `<div class="modal-bg"><div class="modal"><div style="font-weight:700;margin-bottom:8px">${title}</div><div id="modalBody">${html}</div><div style="display:flex;justify-content:flex-end;gap:8px;margin-top:12px" id="modalBtns"></div></div></div>`;
     modalRoot.classList.remove('hidden');
@@ -168,13 +151,9 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   function closeModal(){ modalRoot.classList.add('hidden'); modalRoot.innerHTML = ''; modalRoot.setAttribute('aria-hidden','true'); }
 
-  // utility
   function escapeHtml(s){ return String(s||'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 
-  // initial render
   render();
-
-  // expose for debug
   window._calc = { history };
 });
 
